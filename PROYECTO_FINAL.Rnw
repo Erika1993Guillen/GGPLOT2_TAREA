@@ -1,0 +1,802 @@
+\documentclass[12pt,letterpaper]{article}
+\usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry}
+\usepackage[ansinew]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{dsfont}
+\usepackage{multicol} 
+\usepackage{subfigure}
+\usepackage{graphicx}
+\usepackage{float} 
+\usepackage{verbatim} 
+\usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry}
+\usepackage{fancyhdr}
+\pagestyle{fancy} 
+\fancyhead[LO]{\leftmark}
+\usepackage{caption}
+\newtheorem{definicion}{Definci\'on}
+\begin{document}
+
+\begin{titlepage}
+\setlength{\unitlength}{1 cm} %Especificar unidad de trabajo
+
+
+\begin{center}
+\textbf{{\large UNIVERSIDAD DE EL SALVADOR}\\ [0.50 cm]
+{\large FACULTAD MULTIDISCIPLINARIA DE OCCIDENTE}\\ [0.50 cm]
+{\large DEPARTAMENTO DE MATEM\'ATICA}}\\ [0.50 cm]
+
+\begin{picture}(18,4)
+ \put(7,0){\includegraphics[width=4cm]{minerva.jpg}}
+\end{picture}
+\\ [0.50 cm]
+
+\textbf{{\large Licenciatura en Estad\'istica}\\ [1.25 cm]
+{\large Control Estad\'istico del Paquete R }\\ [2 cm]
+%\setlength{\unitlength}{1 cm}
+{\large  \textbf{INTRODUCCI\'ON AL AN\'ALISIS GR\'AFICOS CON GGPLOT2}}\\ [3 cm]
+{\large Alumna:}\\
+{\large Erika Beatr\'iz Guill\'en Pineda}\\ [2cm]
+{\large Fecha de elaboraci\'on}\\
+Santa Ana - \today }
+\end{center}
+\end{titlepage}
+
+\newtheorem{teorema}{Teorema}
+\newtheorem{prop}{Proposici\'on}[section]
+
+\lhead{Gr\'aficos con ggplot2}
+\lfoot{LICENCIATURA EN ESTAD?STICA}
+\cfoot{UESOCC}
+\rfoot{\thepage}
+%\pagestyle{fancy} 
+
+\setcounter{page}{1}
+\newpage
+
+\section {Introducci\'on}
+Los gr\'aficos son una forma muy \'util de estudiar los datos antes de analizarlos. Si no inspeccionamos los datos mediante un gr\'afico, realmente no sabremos c\'omo interpretar los resultados.Al realizar un gr\'afico en R \'este es enviado a un dispositivo gr\'afico, que no es m\'as que una ventana gr\'afica o un archivo.Por otro lado existen diferentes sistemas gr\'aficos que podemos utilizar: \textbf{base, lattice o ggplot2} y generalmente no podremos mezclar.
+\section {Gr\'aficos en R con ggplot2}
+\subsection{El paquete ggplot2}
+Tiene las siguientes caracter\'isticas
+\begin{itemize}
+\item Con el R es posible obtener el mismo resultado usando diferentes \textbf{caminos}
+\item El paquete ggplot es uno de los entornos gr\'aficos del R
+\item Permite elaborar un gr\'afico a partir de un proceso de acumulaci\'on de \textbf{capas o layers}
+\item Tiene un cierto nivel de complejidad pero se obtienen resultados muy profesionales.
+\end{itemize}
+
+\subsection{Capas o Layers en ggplot2}
+El esquema b\'asico de la gram\'atica de ggplot es: ggplot(data.frame, aes(x = variable)) + geom_forma()\\
+Un gr\'afico en ggplot2 puede tener varias capas, en su conjunto, las capas forman el gr\'afico al combinar:
+\begin{itemize}
+\item Un data frame y las variables a ser graficadas
+\item Una o varias capas indicando, entre otros: 
+  \item El tipo de objeto a graficar o \textbf{geom} (barra, l\'inea, punto, etc.)
+	\item Las transformaciones estad\'isticas a los datos
+  \item La posici\'on de los objetos en el gr\'afico
+\item Una escala para cada variable a ser graficada
+\item Un sistema de coordenadas
+\item La especificaci\'on de \textbf{facetas} del gr\'afico
+\end{itemize}
+
+\subsection{Uso B\'asico}
+
+Para definir un gr\'afico es necesario siempre empezar por la instrucci\'on ggplot.
+Por ejemplo podemos utilizar la base de datos cars y representar la distancia
+necesaria de frenado en funci\'on de la velocidad.\\
+
+\textbf{Ejenplo 1:}\\
+
+\\ Activar el Directorio de Trabajo
+
+<<>>=
+getwd() 
+setwd("C:/Users/User/Documents/GGPLOT2_TAREA")
+@
+
+Activar la Librer\'ia
+
+<<>>=
+library(ggplot2)
+ggplot(cars,aes(x=speed,y=dist)) + geom_point()
+
+@
+
+En esta instrucci\'on, se define la base de datos que utilizamos y la 'est\'etica' b\'asica de la gr\'afica, es decir qu\'e variables vamos a representar. Una vez definida, se a\~nade una 'geometria', en este caso los puntos que indican la distancia necesaria para frenar en cada caso respecto a la velocidad del coche. De manera muy simple podemos a\~nadir opciones a la gr\'afica. Por ejemplo, podemos etiquetar los ejes
+
+<<>>=
+# ETIQUETANDO LOS EJES DE LA GR\'AFICA
+ggplot(cars,aes(x=speed,y=dist)) + geom_point() + 
+  labs(title="Distancia de frenado", 
+  x="Velocidad",  y="Distancia")
+@
+
+La geometr\'Ia admite su propia esT\'etica. Por ejemplo, podemos hacer que los
+puntos aumenten de tama\~no en funci\'on de la velocidad y a la vez que el color
+sea distinto
+
+<<>>=
+ggplot(cars,aes(x=speed,y=dist)) + geom_point(aes(size=speed,color=speed)) +
+labs(title="Distancia de frenado",x="Velocidad", y="Distancia")
+
+@
+
+Los gr\'aficos en ggplot2 pueden asignarse a objetos para ser modificados
+posteriormente. Por ejemplo
+
+<<>>=
+p1 <- ggplot(cars,aes(x=speed,y=dist))
+p1 + geom_point()
+@
+
+Ahora podemos obtener una gr\'afica distinta aprovechando que tenemos el
+objeto p1 
+
+<<>>=
+p1 + geom_point() + geom_smooth()
+@
+
+\subsection{Histogramas}
+Un histograma permite representar la distribuci\'on de valores de una variable
+cont\'unua observados en una muestra. Por ejemplo, en los datos fat disponible
+en la libreria UsingR se recogen datos de distintas variables fisiol\'ogicas de una
+muestra de personas. Podemos obtener una gr\'afica de la distribuci\'on de grasa
+corporal mediante:
+
+<<>>=
+install.packages("UsingR")
+library(UsingR)
+ggplot(fat,aes(x=body.fat)) + geom_histogram(fill="white",color="black")
+@
+
+Podemos observar que el resultado es un tanto confuso. Podemos mejorar la
+gr\'afica cambiando la anchura de los intervalos
+
+<<>>=
+ggplot(fat,aes(x=body.fat)) + geom_histogram(fill="white",
+                        color="black",binwidth=5)
+@
+
+Por defecto, el histograma representa la frecuencia absoluta. Para obtener
+el porcentage debemos especificarlo en la est\'etica
+
+<<>>=
+ggplot(fat,aes(x=body.fat)) + geom_histogram(aes(y = (..count..)/sum(..count..)), 
+                        fill="white",color="black",binwidth=5)
+@
+
+\subsection{Boxplot}
+El gr\'afico boxplot permite resumir de manera eficiente distintos \'indices estad\'isticos.
+Por ejemplo:
+
+<<>>=
+p <- ggplot(ToothGrowth,aes(supp,len))
+p + geom_boxplot(aes(fill=supp))
+@
+
+Los valores correspondientes al l\'imite superior de la caja indican el percentil
+75, el l\'imite inferior corresponde al percentil 25 y la l\'inia horizontoal a la mediana
+o percentil 50. Las l\'ineas verticales indican el valor m\'aximo y m\'inimo
+obervado. Podemos superponer los puntos correspondientes a las obervaciones a\~nadiendo
+
+<<>>=
+p + geom_boxplot(aes(fill=supp))+ geom_point()
+@
+
+En muchos casos es interesante considerar distintos factores. En los datos
+de crecimeinto de los dientes podemos considerar el suplemento alimenticio y
+la dosis. Para ello, basta con a~nadir una instrucci\'on a la est\'etica del boxplot
+
+<<>>=
+p + geom_boxplot(aes(fill=factor(dose)))
+@
+
+Evidentemente, podemos cambiar el orden de los factores si consideramos
+que es m\'as interesante. Por ejemplo:
+
+<<>>=
+p <- ggplot(ToothGrowth,aes(factor(dose),len))
+p + geom_boxplot(aes(fill=factor(dose)))
+@
+
+Ahora podemos subdividir por el suplemento alimenticio
+
+<<>>=
+p + geom_boxplot(aes(fill=factor(supp)))
+@
+
+Podemos resaltar los outliers o datos extremos
+
+<<>>=
+p + geom_boxplot(aes(fill=factor(supp)), outlier.colour = "red", 
+                 outlier.size = 3)
+@
+
+\subsection{Gr\'aficos por Subgrupos}
+
+En muchos casos ser\'a necesario comparar resultados en distintos grupos. Algunos
+procedimientos, p.e. geom boxplot ya incluyen esta posibilidad para dos
+grupos, pero podr\'ia ser necesario considerar m\'as variables y subdividir las gr\'aficas. El paquete ggplot2 permite hacer esto mediante la instruccions facets grid
+y sus variantes. Veamos como funciona con unos ejemplos. Para empezar, representaremos
+un boxplot separando las gr\'aficas por suplemento alimenticio. Para
+ello, facet grid especifica qu\'e variable aparecer\'a en los subgrupos de filas(en este
+caso ninguna) y qu\'e variable definira las columnas (en este caso el suplemento
+alimenticio) en una matriz de gr\'aficos donde se mostrar\'a el gr\'afico requerido
+para cada combinaci\'on de fila y columna
+
+<<>>=
+library(grid)
+ggplot(ToothGrowth,aes(factor(dose),len)) + geom_boxplot(aes(fill=factor(dose))) +
+facet_grid(.~supp)
+@
+
+Para apreciar las posibilidades de esta opci\'on, vamos a representar los histogramas
+de distribuci\'on de la longitud de dientes por dosis y suplemento alimenticio
+
+<<>>=
+ggplot(ToothGrowth,aes(x=len)) + geom_histogram(fill="white",
+      color="black",binwidth=5) + facet_grid(dose~supp)
+@
+
+La opci\'on de facet grid puede utilizarse con cualquier tipo de gr\'aficos
+
+<<>>=
+p <- ggplot(mtcars,aes(x=wt,y=mpg))
+p + geom_point() + facet_grid()
+@
+
+Evidentemente, podemos utilizar m\'as opciones. Por ejemplo, podemos incluir
+la recta de regresi\'on en las observaciones de cada subgrupo
+
+<<>>=
+p + geom_point() + facet_grid(am~gear) + geom_smooth(se=F,method="lm")
+@
+
+\subsection{Transformaci\'on de las escalas de los ejes}
+
+En algunos casos, ser\'a necesario transformas las escalas de los ejes para obtener
+unos resultados m\'as claros. Veamos como puede hacerse. Consideremos los
+datos mammals que se encuentran en la libreria MASS:
+
+<<>>=
+library(MASS)
+head(mammals)
+@
+
+Si representamos el peso del cerebro respecto al peso del cuerpo, obtenemos
+
+<<>>=
+p <- ggplot(mammals,aes(x=body,y=brain))
+p + geom_point()
+@
+
+Dado que existe una diferencia muy grande en el tama~no de los animales,
+puede ser m\'as interesante representar estos datos en escala logar\'tmica
+
+<<>>=
+p + geom_point()+coord_trans(x="log",y="log")
+@
+
+\subsection{Gr\'afico de Barras}
+
+Los gr\'aficos de barras son apropiados para representar las frecuencias absolutas
+de los valores de factores. Por ejemplo, la base de datos birthwt contiene informaci\'on acerca del peso de recien nacidos en funci\'on de distintos caracter\'isticas
+de la madre.
+
+<<>>=
+head(birthwt)
+@
+
+Podemos obtener una tabla de frecuencias que indique cuantos ni\~nos nacen
+con poco peso en relaci\'on, por ejemplo, a la raza de la madre:
+
+<<>>=
+with(birthwt, table(race,low))
+
+@
+
+Podemos obtener la gr\'afica mediante el siguiente procedimiento 
+
+<<>>=
+ggplot(birthwt,aes(x=factor(low),fill=factor(race)))+
+  geom_bar(position=position_dodge())
+@
+
+Podemos cambiar el color de las barras haciendo 
+
+<<>>=
+ggplot(birthwt,aes(x=factor(low),fill=factor(race)))+
+geom_bar(position=position_dodge(),color="black") +
+scale_fill_manual(values=c("#999999", "#E69F00", "#E70F00"))
+@
+
+En general, es m\'as interesante representar los porcentajes. En las tablas
+podemos hacer, por ejemplo, el procentage de bajo peso por raza:
+
+<<>>=
+t <- with(birthwt, table(race,low))
+tp<- round(prop.table(t,1),1)
+tp
+@
+
+Para poder utilizar los resultados en ggplot2, debemos transformar la tabla a
+un data.frame:
+
+<<>>=
+tp <- as.data.frame(round(prop.table(t,1),1))
+tp
+@
+
+Ahora podemos representar estos porcentages
+
+<<>>=
+ggplot(tp,aes(x=factor(race),fill=factor(low),Freq))+ 
+  geom_bar(stat="identity",position=position_dodge(),color="black")
+@
+
+\subsection{Gr\'aficas de medidas e intervalos de confianza}
+
+La obtenci\'on de gr\'aficos de medias es algo complicada con ggplot2. Para simplificarlo, es necesario cargar una funci\'on auxiliar summarySE que se encuentra en la p\'agina web: http://wiki.stdout.org/rcookbook/Graphs/ en el apartado Plotting means and error bars. En este apartado utiizaremos el mismo ejemplo que se encuentra m\'as desarrollado en dicha p\'agina. Para cargar esta funci\'on es necesario tener instalada la libreria plyr.\\
+\\ Empezaremos, calulado los datos necesarios. En este caso, utilizamos los datos ToothGrowth:
+
+<<>>=
+install.packages("plyr")
+library(plyr)
+@
+
+<<>>=
+df <- ToothGrowth
+dfc <- summarySE(df, measurevar="len", groupvars=c("supp","dose"))
+dfc
+@
+
+Se puede apreciar que se ha creado un data.frame con la media de longitud
+por dosis y suplemento. As\'i mismo, se ha calculado la correspondiente desviaci\'on
+estandard y el valor de la amplitud del intervalo de confianza. Una vez calculados,
+podemos representarlos f\'acilmente
+
+<<>>=
+ggplot(dfc, aes(x=dose, y=len, colour=supp)) + geom_errorbar(aes(ymin=len-ci, ymax=len+ci), width=.1,size=1) + geom_line(size=1) + geom_point(size=3)
+@
+
+Un ejemplo que reune muchas de las opciones que pueden utilizarse ser\'ia:
+
+<<>>=
+pd <- position_dodge(.1)
+ggplot(dfc, aes(x=dose, y=len, colour=supp, group=supp)) + geom_errorbar(aes(ymin=len-ci, ymax=len+ci), colour="black", width=.1, position=pd) + geom_line(position=pd) + geom_point(position=pd, size=3, shape=21, fill="white") + xlab("Dose (mg)") + ylab("Tooth length") + scale_colour_hue(name="Supplement type", breaks=c("OJ", "VC"),labels=c("Orange juice", "Ascorbic acid"),l=40) + ggtitle("The Effect of Vitamin C on\nTooth Growth in Guinea Pigs") + scale_y_continuous(limits=c(0, max(dfc$len + dfc$ci)), breaks=0:20*4) + theme_bw() + theme(legend.justification=c(1,0), legend.position=c(1,0))
+# Legend label, use darker colors
+# Use darker colors, lightness=40
+# Set y range
+# Set tick every 4
+# Position legend in bott
+@
+
+En algunos casos, se prefiere representar las medias con barras. Podemos
+hacer lo siguiente. Primero, definiremos la dosis como un factor:
+
+<<>>=
+dfc2 <- dfc
+dfc2$dose <- factor(dfc2$dose)
+@
+
+Ahora podemos obtener la gr\'afica haciendo:
+
+<<>>=
+ggplot(dfc2, aes(x=dose, y=len, fill=supp)) + 
+  geom_bar(stat="identity",position=position_dodge()) + 
+  geom_errorbar(aes(ymin=len-ci, ymax=len+ci), 
+                width=.2, position=position_dodge(.9))
+# Width of the error bars
+@
+
+Podemos acabar, con un ejemplo m\'as elaborado
+
+<<>>=
+ggplot(dfc2, aes(x=dose, y=len, fill=supp)) + geom_bar(position=position_dodge(), 
+    colour="black", size=.3) + geom_errorbar(aes(ymin=len-se, ymax=len+se), 
+    size=.3, width=.2, position=position_dodge(.9)) + xlab("Dose (mg)") + 
+  ylab("Tooth length") + scale_fill_hue(name="Supplement type", 
+  breaks=c("OJ", "VC"), labels=c("Orange juice", "Ascorbic acid")) + 
+  ggtitle("The Effect of Vitamin C on\nTooth Growth in Guinea Pigs") + 
+  scale_y_continuous(breaks=0:20*4) + theme_bw()
+# Use black outlines,
+# Thinner lines
+# Legend label, use darker colors
+@
+
+
+\subsection{Ejemplo 2:}
+\begin{enumerate}
+\item\textbf{Activa tu directorio de trabajo}   
+
+<<>>=
+getwd() 
+setwd("C:/Users/User/Documents/GGPLOT2_TAREA")
+@
+
+\item\textbf{Instalar el paquete ggplot de forma manual o utilizando el men\'u en R Packages} 
+
+\item\textbf{Activar la libreria}
+
+<<>>=
+library("ggplot2", lib.loc="~/R/win-library/3.2")
+
+ggplot(data=iris, aes(x=Sepal.Length, y=Sepal.Width)) + geom_point() + 
+  stat_smooth()
+p<-ggplot(data=iris, aes(x=Sepal.Length, y=Sepal.Width))
+p+geom_point()+geom_smooth(method='lm')
+
+library("grid", lib.loc="~/R/win-library/3.2")
+vplayout <- function(x, y) viewport(layout.pos.row = x, layout.pos.col = y)
+p1<-ggplot(data=iris,aes(x=Sepal.Length,y=Sepal.Width))
+grid.newpage()
+pushViewport(viewport(layout = grid.layout(1, 2)))
+print(p1+geom_point()+geom_smooth(method='lm'), vp = vplayout(1, 1))
+print(p1+geom_point()+geom_smooth(), vp = vplayout(1, 2))
+
+p1+geom_point(aes(colour=Species))+
+geom_smooth(aes(fill=Species),method='lm')+ labs(title='Iris Data',
+                                          x='Longitud Sepal')
+
+p1+geom_point()+
+geom_smooth(aes(fill=Species))
+
+p1+geom_point(aes(colour=Species))+
+geom_smooth()
+
+p2<-p1+aes(colour=Species)
+
+p2+geom_point()+geom_smooth(method='lm')
+
+@
+\textbf{TRANSFORMACIONES ESTAD\'ISTICA: Utilizaci\'on para a\~nadir una etiqueta a las barras de datos}
+<<>>=
+library("ggplot2", lib.loc="~/R/win-library/3.2")
+index<-sample(1:150,100)
+subdata<-iris[index,]
+p2<-ggplot(subdata,aes(x=Species))+geom_bar(fill=c('red','orange','green'))
+p2+stat_bin(geom='text',aes(label=..count..,vjust=2),colour='blue')
+@
+\textbf{\?C\'omo podemos representar la media de una variable seg\'un la especie\?}
+<<>>=
+library("plyr", lib.loc="~/R/win-library/3.2")
+# Calculem la mitjana de Sepal.Length per cada especie
+mSeL <- ddply(iris, "Species", summarise, mSeL = mean(Sepal.Length))
+p<-ggplot(mSeL, aes(x = Species, y = mSeL)) + geom_bar(stat = "identity")
+p+geom_text(aes(label=mSeL),vjust=2,colour='white')
+@
+\textbf{Uso de facets}
+\begin{itemize}
+\item Facets es la nomenclatura de ggplot2 para muestras m\'ultiples
+\item Crea gr\'aficos separados para diferentes subconjuntos de datos definidos por f\'ormulas
+\item La principal funci\'on es facet_grid()
+\end{itemize}
+<<>>=
+p1+geom_point()+geom_boxplot()+geom_density2d()+ 
+  labs(title='Iris Data',x='Longitud Sepal')+ 
+  facet_grid(~Species)
+
+library("ggplot2", lib.loc="~/R/win-library/3.2")
+ggplot(CO2,aes(x=conc,y=uptake))+geom_smooth()+geom_point()+
+  facet_grid(Type~Treatment)
+@
+\textbf{Control del aspecto con Scales: caracter\'isticas}
+\begin{itemize}
+\item Las Scales permiten modificar
+\item position
+\item color and fill
+\item size
+\item shape
+\item line type \\\\
+\textbf {La sintaxis es scale_<aesthetic>_<type}\\\\
+\textbf {Los principales argumentos para modificar son:}
+\item name
+\item limits
+\item breaks
+\item labels
+\end{itemize}
+\textbf {Modificaci\'on del color}
+<<>>=
+iris$Sizeclass <- cut(iris$Sepal.Length, breaks = c(0, 5, 6, Inf),
+                      labels = c("small", "medium", "large"))
+p<-ggplot(iris,aes(x=Sizeclass,fill=Species))+geom_bar(position='dodge')+
+scale_fill_brewer(palette="Pastel1")
+p
+@
+\textbf {Utilizaci\'on de las Scales}
+<<>>=
+library("grid", lib.loc="~/R/win-library/3.2")
+p<-ggplot(iris,aes(x=Sepal.Length,y=Sepal.Width))
+grid.newpage()
+pushViewport(viewport(layout = grid.layout(1, 2)))
+print(p+geom_point(aes(colour=Sepal.Length,shape=Species)), 
+      vp = vplayout(1, 1))
+print(p+geom_point(aes(colour=Sepal.Length,shape=Species))+ 
+        scale_colour_gradient(limits=c(5,6)), vp = vplayout(1, 2))
+
+@
+\textbf{Geoms y Stats asociadas a ggplot}\\\\
+\textbf{La geom density y la utilizaci\'on del theme}
+<<>>=
+p2<-ggplot(iris,aes(x=Sepal.Length))
+p2+geom_density(aes(fill=Species))+theme_bw()+theme(legend.position='top')
+@
+
+\subsection{Ejemplo 3:}
+
+<<>>=
+library("ggplot2", lib.loc="~/R/win-library/3.2")
+ 
+# 1 HISTOGRAMA CON BIND ESPECIFICO
+qplot(x=carat, binwidth=0.25, data = diamonds)
+ 
+# 2 GRAFICO DE BARRAS
+qplot(x=clarity, data = diamonds)
+ 
+# 3 GRAFICO DE BARRAS APILADO
+qplot(x=clarity, data=diamonds, geom="bar", fill=cut, position="stack")
+ 
+# 4 GRAFICO DE BARRA SIN APILAR
+qplot(x=clarity, data=diamonds, geom="bar", fill=cut, position="dodge")
+ 
+# 5 GRAFICO DE LINEA DE FRECUENCIA POR CLASE
+qplot(x=clarity, geom="freqpoly", group=cut, colour=cut,data=diamonds)
+ 
+# 6 GRAFICO DE AREA
+qplot(x=wt, geom="density", group=factor(cyl), colour=factor(cyl),
+      fill=factor(cyl),alpha=I(.5),data=mtcars)
+ 
+# 7 GRAFICO DE DISPERSION CON TAMA?O
+qplot(x=mpg, y=wt, size=cyl,data = mtcars)
+ 
+# 8 GRAFICO CON COLOR GRADIENTE
+qplot(x=wt, y=mpg, color=cyl,data=mtcars)
+ 
+# 9 GRAFICO CON COLOR POR CLASE
+qplot(x=wt, y=mpg, color=factor(cyl),data=mtcars)
+ 
+# 10 GRAFICO CON COLOR GRADIENTE + TAMA?O
+qplot(x=mpg, y=wt, size=cyl,  colour=hp, data = mtcars)
+ 
+# 11 GRAFICO DISPERSION CON AREA DE ERROR DE LA LINEA DE REGRESION
+qplot(x=hp, y=wt, data=mtcars, geom=c("point","smooth"), method="lm")
+ 
+# 12 GRAFICO DISPERSION CON COLOR TRANSPARENTE EN LOS PUNTOS
+qplot(x=carat,y=price, alpha=I(0.02), data = diamonds)
+ 
+# 13 GRAFICO DE DISPERSION CON VARIABLE DISCRETA. 
+# JITTER DA UN VALOR ALEATORIO A ACA PUNTO DENTRO DE LA DIIMENSION
+qplot(x=color, y=price/carat, data = diamonds, geom = "jitter",alpha = I(0.08))
+ 
+# 14 GRAFICO DE DISPERSION SEGMENTADO
+qplot(x=carat, y=price, facets = ~color, data = diamonds)
+ 
+# 15 BOXPLOT
+qplot(x=color, y=carat, data = diamonds, geom = "boxplot")
+
+@
+
+\subsection{Ejemplo 4:}
+\textbf{Geoms - Usa una geom para representar los datos, usa las propiedades estéticas de la geom para representar variables. Cada función devuelve una capa.}
+
+<<>>=
+#############################**********#############################################
+# Una Variable
+# Contínua
+
+a <- ggplot(mpg, aes(hwy))
+b<- ggplot(mpg, aes(fl))
+a + geom_area(stat = "bin") # x, y, alpha, color, fill, linetype, size)
+b<- ggplot(mpg, aes(fl))
+b + geom_area(stat = "bin")
+a + geom_density(kernel = "gaussian") # x, y, alpha, color, fill, linetype, size, weight)
+b + geom_density(kernel="gaussian")
+a + geom_dotplot() # x, y, alpha, color, fill)
+a + geom_freqpoly() # x, y, alpha, color, linetype, size)
+b + geom_freqpoly()
+a + geom_histogram(binwidth = 5) # x, y, alpha, color, fill, linetype, size, weight)
+b + geom_histogram(aes(y = ..density..))
+
+# Discreta
+b <- ggplot(mpg, aes(fl))
+b + geom_bar() # x, alpha, color, fill, linetype, size, weight)
+#############################**********#############################################
+
+#############################**********#############################################
+# Primitivas Graficas
+c <- ggplot(map, aes(long, lat))
+c + geom_polygon(aes(group = group)) # x, y, alpha, color, fill, linetype, size
+
+d <- ggplot(economics, aes(date, unemploy))
+d + geom_path(lineend="butt", linejoin="round", linemitre=1)
+# x, y, alpha, color, linetype, size
+d + geom_ribbon(aes(ymin=unemploy - 900, ymax=unemploy + 900))
+#x, ymax, ymin, alpha, color, fill, linetype, siz
+
+e <- ggplot(seals, aes(x = long, y = lat))
+e + geom_segment(aes(xend = long + delta_long, yend = lat + delta_lat))
+e + geom_rect(aes(xmin = long, ymin = lat, xmax= long + delta_long, ymax = lat + delta_lat))
+#############################**********#############################################
+
+#############################**********#############################################
+# Dos variables
+#Continua X, Continua Y
+
+f <- ggplot(mpg, aes(cty, hwy))
+f + geom_blank()
+f + geom_jitter()
+# x, y, alpha, color, fill, shape, size
+f + geom_point()
+# x, y, alpha, color, fill, shape, size
+f + geom_quantile()
+# x, y, alpha, color, linetype, size, weight
+f + geom_rug(sides = "bl")
+# alpha, color, linetype, size
+f + geom_smooth(model = lm)
+# x, y, alpha, color, fill, linetype, size, weight
+f + geom_text(aes(label = cty))
+# x, y, label, alpha, angle, color, family, fontface, hjust, lineheight, size, vjust
+
+# Discreta X, Continua Y
+g <- ggplot(mpg, aes(class, hwy))
+g + geom_bar(stat = "identity")
+#x, y, alpha, color, fill, linetype, size, weight
+g + geom_boxplot()
+#lower, middle, upper, x, ymax, ymin, alpha, color, fill, linetype, shape, size, weight
+g + geom_dotplot(binaxis = "y",
+stackdir = "center")
+#x, y, alpha, color, fill
+g + geom_violin(scale = "area")
+#x, y, alpha, color, fill, linetype, size, weight
+
+#Discreta X, Discreta Y
+h <- ggplot(diamonds, aes(cut, color))
+h + geom_jitter()
+#x, y, alpha, color, fill, shape, size
+
+#Distribución Bivariada Continua
+i <- ggplot(movies, aes(year, rating))
+i + geom_bin2d(binwidth = c(5, 0.5))
+#xmax, xmin, ymax, ymin, alpha, color, fill,linetype, size, weight
+i + geom_density2d()
+#x, y, alpha, colour, linetype, size
+i + geom_hex()
+#x, y, alpha, colour, fill size
+
+#Funcion Continua
+j <- ggplot(economics, aes(date, unemploy))
+j + geom_area()
+#x, y, alpha, color, fill, linetype, size
+j + geom_line()
+#x, y, alpha, color, linetype, size
+j + geom_step(direction = "hv")
+#x, y, alpha, color, linetype, size
+
+# Visualizando el error
+df <- data.frame(grp = c("A", "B"), fit = 4:5, se = 1:2)
+k <- ggplot(df, aes(grp, fit, ymin = fit-se, ymax = fit+se))
+k + geom_crossbar(fatten = 2)
+#x, y, ymax, ymin, alpha, color, fill, linetype, size
+k + geom_errorbar()
+#x, ymax, ymin, alpha, color, linetype, size, width (also geom_errorbarh())
+k + geom_linerange()
+#x, ymin, ymax, alpha, color, linetype, size
+k + geom_pointrange()
+#x, y, ymin, ymax, alpha, color, fill, linetype, shape, size
+
+#Mapas
+data <- data.frame(murder =USArrests$Murder, state = tolower(rownames(USArrests)))
+map <- map_data("state")
+l <- ggplot(data, aes(fill = murder))
+l + geom_map(aes(map_id = state), map = map) +
+expand_limits(x = map$long, y = map$lat)
+#map_id, alpha, color, fill, linetype, size
+#############################**********#############################################
+
+#############################**********#############################################
+#Tres Variables
+seals$z <- with(seals, sqrt(delta_long^2 + delta_lat^2))
+m <- ggplot(seals, aes(long, lat))
+m + geom_contour(aes(z = z))
+#x, y, z, alpha, colour, linetype, size, weight seals$z 
+m + geom_raster(aes(fill = z), hjust=0.5,
+vjust=0.5, interpolate=FALSE)
+#x, y, alpha, fill
+m + geom_tile(aes(fill = z))
+#x, y, alpha, color, fill, linetype, size
+
+@
+
+\textbf{Stats Una forma alternativa de crear una capa}
+
+<<>>=
+a + stat_bin(binwidth = 1, origin = 10)
+#x, y | ..count.., ..ncount.., ..density.., ..ndensity..
+a + stat_bindot(binwidth = 1, binaxis = "x")
+#x , y, | ..count.., ..ncount..
+a + stat_density(adjust = 1, kernel = "gaussian")
+#x, y, | ..count.., ..density.., ..scaled..
+f + stat_bin2d(bins = 30, drop = TRUE)
+#x, y, fill | ..count.., ..density..
+f + stat_binhex(bins = 30)
+#x, y, fill | ..count.., ..density..
+f + stat_density2d(contour = TRUE, n = 100)
+#x, y, color, size | ..level..
+m + stat_contour(aes(z = z))
+#x, y, z, order | ..level..
+m+ stat_spoke(aes(radius= z, angle = z))
+#angle, radius, x, xend, y, yend | ..x.., ..xend.., ..y.., ..yend..
+m + stat_summary_hex(aes(z = z), bins = 30, fun = mean)
+#x, y, z, fill | ..value..
+m + stat_summary2d(aes(z = z), bins = 30, fun = mean)
+#x , y, z, fill | ..value..
+g + stat_boxplot(coef = 1.5)
+#x, y | ..lower.., ..middle.., ..upper.., ..outliers..
+g + stat_ydensity(adjust = 1, kernel = "gaussian", scale = "area")
+#x, y | ..density.., ..scaled.., ..count.., ..n.., ..violinwidth.., ..width..
+f + stat_ecdf(n = 40)
+#x, y | ..x.., ..y..
+f + stat_quantile(quantiles = c(0.25, 0.5, 0.75), formula = y ~ log(x),
+method = "rq")
+#x, y | ..quantile.., ..x.., ..y..
+f + stat_smooth(method = "auto", formula = y ~ x, se = TRUE, n = 80,
+fullrange = FALSE, level = 0.95)
+#x, y | ..se.., ..x.., ..y.., ..ymin.., ..ymax..
+ggplot() + stat_function(aes(x = -3:3),
+fun = dnorm, n = 101, args = list(sd=0.5))
+x | ..y..
+f + stat_identity()
+ggplot() + stat_qq(aes(sample=1:100), distribution = qt,
+dparams = list(df=5))
+#sample, x, y | ..x.., ..y..
+f + stat_sum()
+#x, y, size | ..size..
+f + stat_summary(fun.data = "mean_cl_boot")
+f + stat_unique()
+
+@
+
+\textbf{Escalas (Scales)}
+
+<<>>=
+n <- b + geom_bar(aes(fill = fl))
+n
+#Escalas de color y relleno
+n <- b + geom_bar(aes(fill = fl))
+n + scale_fill_brewer(palette = "Blues")
+#Para opciones de paleta:
+library(RcolorBrewer)
+display.brewer.all()
+n + scale_fill_grey(
+start = 0.2, end = 0.8,na.value = "red")
+
+o <- a + geom_dotplot(aes(fill = ..x..))
+o + scale_fill_gradient(low = "red", high = "yellow")
+o + scale_fill_gradient2(low = "red", hight = "blue",mid = "white", midpoint = 25)
+o + scale_fill_gradientn(colours = terrain.colors(6))
+#También: rainbow(),
+#heat.colors(), topo.colors(),
+#cm.colors(),
+#RColorBrewer::brewer.pal()
+
+#Formas para las Escalas
+p <- f + geom_point(aes(shape = fl))
+p + scale_shape(solid = FALSE)
+p + scale_shape_manual(values = c(3:7))
+#Se muestran valores de
+#la forma a la derecha del
+#gráfico
+
+#tamaño de Escalas
+q <- f + geom_point(aes(size = cyl))
+q + scale_size_area(max = 6)
+#Valor mapeado al área del círculo(no el radio)
+
+@
+
+
+
+\end{document}
